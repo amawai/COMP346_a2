@@ -56,7 +56,7 @@ public class BlockManager3
 		try
 		{
 			// Some initial stats...
-			System.out.println("Main thread starts executing.");
+			System.out.println("Main thread 3 starts executing.");
 			System.out.println("Initial value of top = " + soStack.getITop() + ".");
 			System.out.println("Initial value of stack top = " + soStack.pick() + ".");
 			System.out.println("Main thread will now fork several threads.");

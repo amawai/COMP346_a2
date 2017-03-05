@@ -1,5 +1,5 @@
 /**
- * Class BlockStack
+ * Class BlockStack1
  * Implements character block stack and operations upon it.
  *
  * $Revision: 1.4 $
