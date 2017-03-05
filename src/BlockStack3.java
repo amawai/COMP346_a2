@@ -9,7 +9,9 @@
  * Inspired by an earlier code by Prof. D. Probst
 
  */
-class BlockStack
+//import EmptyStackException;
+
+class BlockStack3
 {
 	/**
 	 * # of letters in the English alphabet + 2
@@ -24,32 +26,34 @@ class BlockStack
 	/**
 	 * Current size of the stack
 	 */
-	public int iSize = DEFAULT_SIZE;
+	private int iSize = DEFAULT_SIZE;
 
 	/**
 	 * Current top of the stack
 	 */
-	public int iTop  = 3;
+	private int iTop  = 3;
 
 	/**
 	 * stack[0:5] with four defined values
 	 */
-	public char acStack[] = new char[] {'a', 'b', 'c', 'd', '$', '$'};
+	private char acStack[] = new char[] {'a', 'b', 'c', 'd', '$', '$'};
+	
 	
 	//Part of Task 1
 	private int stackAccessCounter = 0;
 	
+
 	/**
 	 * Default constructor
 	 */
-	public BlockStack()
+	public BlockStack3()
 	{
 	}
 
 	/**
 	 * Supplied size
 	 */
-	public BlockStack(final int piSize)
+	public BlockStack3(final int piSize)
 	{
 
 
@@ -68,10 +72,10 @@ class BlockStack
                         this.iSize = piSize;
 		}
 	}
-	public int getTop(){
+	public int getITop(){
 		return iTop;
 	}
-	public int getSize(){
+	public int getISize(){
 		return iSize;
 	}
 	public int getAccessCounter(){
@@ -85,7 +89,7 @@ class BlockStack
 	 * @return top element of the stack, char
 	 */
 	public char pick()
-	{
+	{	
 		stackAccessCounter++;
 		return this.acStack[this.iTop];
 	}
@@ -97,6 +101,13 @@ class BlockStack
 	public char getAt(final int piPosition)
 	{
 		stackAccessCounter++;
+		char stackContent;
+		try{
+			stackContent = this.acStack[piPosition];
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			System.err.println("out of bounds");
+		}
 		return this.acStack[piPosition];
 	}
 
@@ -106,7 +117,21 @@ class BlockStack
 	public void push(final char pcBlock)
 	{
 		stackAccessCounter++;
-		this.acStack[++this.iTop] = pcBlock;
+		try {
+			if (this.isEmpty()){
+				throw new EmptyStackException("Empty");
+			}
+			else if (this.getITop() == MAX_SIZE){
+				throw new Exception();
+			}
+			this.acStack[++this.iTop] = pcBlock;
+		}
+		catch (EmptyStackException e){
+			this.acStack[++this.iTop] = 'a';
+		}
+		catch (Exception e) {
+			System.err.println("Max size reached");
+		}
 	}
 
 	/**
@@ -114,10 +139,22 @@ class BlockStack
 	 * @return ex-top element of the stack, char
 	 */
 	public char pop()
-	{
+	{	
 		stackAccessCounter++;
-		char cBlock = this.acStack[this.iTop];
-		this.acStack[this.iTop--] = '$'; // Leave prev. value undefined
+		char cBlock = '$';
+		try{
+			if (this.isEmpty()){
+				throw new EmptyStackException("Empty");
+			}
+			cBlock = this.acStack[this.iTop];
+			this.acStack[this.iTop--] = '$'; // Leave prev. value undefined
+		}
+		catch (EmptyStackException e){
+			System.err.println("IT'S EMPTY");
+		}
+		catch (Exception e){
+			System.err.println("some exception lmao");
+		}
 		return cBlock;
 	}
 }
