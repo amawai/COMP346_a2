@@ -9,7 +9,7 @@
  * Inspired by an earlier code by Prof. D. Probst
 
  */
-class BlockStack
+class BlockStack1
 {
 	/**
 	 * # of letters in the English alphabet + 2
@@ -35,20 +35,21 @@ class BlockStack
 	 * stack[0:5] with four defined values
 	 */
 	public char acStack[] = new char[] {'a', 'b', 'c', 'd', '$', '$'};
-
+	
+	//Part of Task 1
+	private int stackAccessCounter = 0;
+	
 	/**
 	 * Default constructor
 	 */
-	private int stackAccessCounter = 0;
-	
-	public BlockStack()
+	public BlockStack1()
 	{
 	}
 
 	/**
 	 * Supplied size
 	 */
-	public BlockStack(final int piSize)
+	public BlockStack1(final int piSize)
 	{
 
 
@@ -85,6 +86,7 @@ class BlockStack
 	 */
 	public char pick()
 	{
+		stackAccessCounter++;
 		return this.acStack[this.iTop];
 	}
 
@@ -94,6 +96,7 @@ class BlockStack
 	 */
 	public char getAt(final int piPosition)
 	{
+		stackAccessCounter++;
 		return this.acStack[piPosition];
 	}
 
@@ -102,6 +105,7 @@ class BlockStack
 	 */
 	public void push(final char pcBlock)
 	{
+		stackAccessCounter++;
 		this.acStack[++this.iTop] = pcBlock;
 	}
 
@@ -111,6 +115,7 @@ class BlockStack
 	 */
 	public char pop()
 	{
+		stackAccessCounter++;
 		char cBlock = this.acStack[this.iTop];
 		this.acStack[this.iTop--] = '$'; // Leave prev. value undefined
 		return cBlock;
