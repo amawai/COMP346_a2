@@ -19,6 +19,8 @@ public class BlockManager4
 	 */
 	private static BlockStack4 soStack = new BlockStack4();
 
+	private static int phaseOneThreadsIncomplete = 10;
+
 	/**
 	 * Number of threads dumping stack
 	 */
@@ -27,7 +29,7 @@ public class BlockManager4
 	/**
 	 * Number of steps they take
 	 */
-	private static int siThreadSteps = 5;
+	private static int siThreadSteps = 1;
 
 	/**
 	 * For atomicity
@@ -41,7 +43,7 @@ public class BlockManager4
 	/**
 	 * s1 is to make sure phase I for all is done before any phase II begins
 	 */
-	private static Semaphore s1 = new Semaphore(1);
+	private static Semaphore s1 = new Semaphore(0);
 
 	/**
 	 * s2 is for use in conjunction with Thread.turnTestAndSet() for phase II proceed
@@ -147,7 +149,7 @@ public class BlockManager4
 	{
 		/**
 		 * A copy of a block returned by pop().
-                 * @see BlocStack#pop()
+                 * @see BlockStack#pop()
 		 */
 		private char cCopy;
 
@@ -184,15 +186,21 @@ public class BlockManager4
 					"Acq[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
-				mutex.V(); 
+
+				mutex.V(); 				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 			}
 			catch(Exception e)
 			{
 				reportException(e);
 				System.exit(1);
 			}
-			
+
+			s1.P();
 			phase2();
+			s1.V();
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -248,6 +256,10 @@ public class BlockManager4
 					"Rel[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 				mutex.V();
 			}
 			catch(Exception e)
@@ -256,7 +268,9 @@ public class BlockManager4
 				System.exit(1);
 			}
 
+			s1.P();
 			phase2();
+			s1.V();
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -293,6 +307,10 @@ public class BlockManager4
 					System.out.println(".");
 
 				}
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 				mutex.V();
 			}
 			catch(Exception e)
@@ -301,9 +319,9 @@ public class BlockManager4
 				System.exit(1);
 			}
 
-
+			s1.P();
 			phase2();
-
+			s1.V();
 		}
 	} // class CharStackProber
 
