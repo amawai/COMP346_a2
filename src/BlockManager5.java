@@ -201,7 +201,15 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			while (true) {
+				s2.P();
+				if (turnTestAndSet()){
+					phase2();
+					s2.V();
+					break;
+				}
+				s2.V();
+			}
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -271,7 +279,15 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			while (true) {
+				s2.P();
+				if (turnTestAndSet()){
+					phase2();
+					s2.V();
+					break;
+				}
+				s2.V();
+			}
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -322,7 +338,15 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			while (true) {
+				s2.P();
+				if (turnTestAndSet()){
+					phase2();
+					s2.V();
+					break;
+				}
+				s2.V();
+			}
 		}
 	} // class CharStackProber
 
