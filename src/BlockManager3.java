@@ -145,10 +145,6 @@ public class BlockManager3
 	 */
 	static class AcquireBlock extends BaseThread
 	{
-		/**
-		 * A copy of a block returned by pop().
-                 * @see BlocStack#pop()
-		 */
 		private char cCopy;
 
 		public void run()
@@ -163,7 +159,9 @@ public class BlockManager3
 			{
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 
+
 				this.cCopy = soStack.pop();
+
 
 				System.out.println
 				(
@@ -221,7 +219,6 @@ public class BlockManager3
 				if(soStack.isEmpty() == false)
 					this.cBlock = (char)(soStack.pick() + 1);
 
-
 				System.out.println
 				(
 					"ReleaseBlock thread [TID=" + this.iTID + "] returns Ms block " + this.cBlock +
@@ -242,6 +239,7 @@ public class BlockManager3
 					soStack.pick() + "."
 				);
 			}
+
 			catch(Exception e)
 			{
 				reportException(e);
