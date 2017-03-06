@@ -41,22 +41,21 @@ public class BlockManager4
 	/**
 	 * s1 is to make sure phase I for all is done before any phase II begins
 	 */
-	private static Semaphore s1 = new Semaphore(1);
+	private static Semaphore s1 = new Semaphore(0);
 
 	/**
 	 * s2 is for use in conjunction with Thread.turnTestAndSet() for phase II proceed
 	 * in the thread creation order
 	 */
 	private static Semaphore s2 = new Semaphore(1);
-
-
+	
 	// The main()
 	public static void main(String[] argv)
 	{
 		try
 		{
 			// Some initial stats...
-			System.out.println("Main thread 3 starts executing.");
+			System.out.println("Main thread 4 starts executing.");
 			System.out.println("Initial value of top = " + soStack.getITop() + ".");
 			System.out.println("Initial value of stack top = " + soStack.pick() + ".");
 			System.out.println("Main thread will now fork several threads.");
@@ -154,13 +153,14 @@ public class BlockManager4
 		public void run()
 		{
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] starts executing.");
-
+			
 			phase1();
+			this.phase1ThreadsIncomplete--;
+			if (this.phase1ThreadsIncomplete)
 			
 			try
 			{
-				
-				mutex.P();
+				mutex.P(); //inside try block, because the system exits if exception occurs anyways 
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 				
 				this.cCopy = soStack.pop();
@@ -191,6 +191,7 @@ public class BlockManager4
 				reportException(e);
 				System.exit(1);
 			}
+			
 			
 			phase2();
 

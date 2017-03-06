@@ -159,13 +159,12 @@ public class BlockManager3
 			
 			try
 			{
-				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 				
 				mutex.P();
+				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 				
 				this.cCopy = soStack.pop();
 				
-				mutex.V(); 
 				
 				System.out.println
 				(
@@ -185,7 +184,7 @@ public class BlockManager3
 					"Acq[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
-				
+				mutex.V(); 
 			}
 			catch(Exception e)
 			{
@@ -221,6 +220,7 @@ public class BlockManager3
 			try
 			{
 				
+				mutex.P();
 				if(soStack.isEmpty() == false)
 					this.cBlock = (char)(soStack.pick() + 1);
 
@@ -231,11 +231,11 @@ public class BlockManager3
 					" to position " + (soStack.getITop() + 1) + "."
 				);
 				
-				mutex.P();
+				
 				//Critical section, since soStack should only be accessed one at a time 
 				soStack.push(this.cBlock);
 				
-				mutex.V();
+				
 				
 				System.out.println
 				(
@@ -248,6 +248,7 @@ public class BlockManager3
 					"Rel[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+				mutex.V();
 			}
 			catch(Exception e)
 			{
@@ -274,6 +275,7 @@ public class BlockManager3
 
 			try
 			{
+				mutex.P();
 				for(int i = 0; i < siThreadSteps; i++)
 				{
 					System.out.print("Stack Prober [TID=" + this.iTID + "]: Stack state: ");
@@ -291,6 +293,7 @@ public class BlockManager3
 					System.out.println(".");
 
 				}
+				mutex.V();
 			}
 			catch(Exception e)
 			{
