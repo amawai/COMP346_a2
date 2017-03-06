@@ -2,7 +2,7 @@
 import common.*;
 
 /**
- * Class BlockManager
+ * Class BlockManager5
  * Implements character block "manager" and does twists with threads.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca;
@@ -12,22 +12,24 @@ import common.*;
  * $Last Revision Date: 2017/02/08 $
 
  */
-public class BlockManager3
+public class BlockManager5
 {
 	/**
 	 * The stack itself
 	 */
-	private static BlockStack3 soStack = new BlockStack3();
+	private static BlockStack5 soStack = new BlockStack5();
+
+	private static int phaseOneThreadsIncomplete = 10;
 
 	/**
 	 * Number of threads dumping stack
 	 */
-	private static final int NUM_PROBERS = 5;
+	private static final int NUM_PROBERS = 4;
 
 	/**
 	 * Number of steps they take
 	 */
-	private static int siThreadSteps = 5;
+	private static int siThreadSteps = 1;
 
 	/**
 	 * For atomicity
@@ -41,7 +43,7 @@ public class BlockManager3
 	/**
 	 * s1 is to make sure phase I for all is done before any phase II begins
 	 */
-	private static Semaphore s1 = new Semaphore(1);
+	private static Semaphore s1 = new Semaphore(0);
 
 	/**
 	 * s2 is for use in conjunction with Thread.turnTestAndSet() for phase II proceed
@@ -115,9 +117,6 @@ public class BlockManager3
 			for(int i = 0; i < NUM_PROBERS; i++)
 				aStackProbers[i].join();
 
-			aStackProbers[4].start();
-			aStackProbers[4].join();
-
 			// Some final stats after all the child threads terminated...
 			System.out.println("System terminates normally.");
 			System.out.println("Final value of top = " + soStack.getITop() + ".");
@@ -148,6 +147,10 @@ public class BlockManager3
 	 */
 	static class AcquireBlock extends BaseThread
 	{
+		/**
+		 * A copy of a block returned by pop().
+                 * @see BlockStack#pop()
+		 */
 		private char cCopy;
 
 		public void run()
@@ -155,7 +158,7 @@ public class BlockManager3
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] starts executing.");
 
 			phase1();
-			
+
 			try
 			{
 
@@ -163,6 +166,7 @@ public class BlockManager3
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 
 				this.cCopy = soStack.pop();
+
 
 				System.out.println
 				(
@@ -183,15 +187,20 @@ public class BlockManager3
 					soStack.pick() + "."
 				);
 
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					for (int i = 0; i < 10; i++)
+						s1.V();
+				}
 				mutex.V();
-
 			}
 			catch(Exception e)
 			{
 				reportException(e);
 				System.exit(1);
 			}
-			
+
+			s1.P();
 			phase2();
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
@@ -219,21 +228,23 @@ public class BlockManager3
 
 			try
 			{
-				mutex.P();
 				
 				mutex.P();
 				if(soStack.isEmpty() == false)
 					this.cBlock = (char)(soStack.pick() + 1);
+
 
 				System.out.println
 				(
 					"ReleaseBlock thread [TID=" + this.iTID + "] returns Ms block " + this.cBlock +
 					" to position " + (soStack.getITop() + 1) + "."
 				);
-
-
+				
+				
 				//Critical section, since soStack should only be accessed one at a time 
 				soStack.push(this.cBlock);
+				
+				
 				
 				System.out.println
 				(
@@ -246,15 +257,20 @@ public class BlockManager3
 					"Rel[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					for (int i = 0; i < 10; i++)
+						s1.V();
+				}
 				mutex.V();
 			}
-
 			catch(Exception e)
 			{
 				reportException(e);
 				System.exit(1);
 			}
 
+			s1.P();
 			phase2();
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
@@ -284,13 +300,18 @@ public class BlockManager3
 					for(int s = 0; s < soStack.getISize(); s++)
 						System.out.print
 						(
-							(s == BlockManager3.soStack.getITop() ? "(" : "[") +
-							BlockManager3.soStack.getAt(s) +
-							(s == BlockManager3.soStack.getITop() ? ")" : "]")
+							(s == BlockManager5.soStack.getITop() ? "(" : "[") +
+							BlockManager5.soStack.getAt(s) +
+							(s == BlockManager5.soStack.getITop() ? ")" : "]")
 						);
 
 					System.out.println(".");
 
+				}
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					for (int i = 0; i < 10; i++)
+						s1.V();
 				}
 				mutex.V();
 			}
@@ -300,9 +321,8 @@ public class BlockManager3
 				System.exit(1);
 			}
 
-
+			s1.P();
 			phase2();
-
 		}
 	} // class CharStackProber
 

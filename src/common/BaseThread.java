@@ -17,6 +17,7 @@ import java.util.Random;
  */
 public class BaseThread extends Thread
 {
+
 	/*
 	 * ------------
 	 * Data members
@@ -154,6 +155,7 @@ public class BaseThread extends Thread
 		// test
 		if(siTurn == this.iTID)
 		{
+
 			// set siTurn = siTurn +/- 1;
 			if(pcIncreasingOrder == true)
 				siTurn++;

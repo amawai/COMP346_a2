@@ -19,6 +19,8 @@ public class BlockManager4
 	 */
 	private static BlockStack4 soStack = new BlockStack4();
 
+	private static int phaseOneThreadsIncomplete = 10;
+
 	/**
 	 * Number of threads dumping stack
 	 */
@@ -27,7 +29,7 @@ public class BlockManager4
 	/**
 	 * Number of steps they take
 	 */
-	private static int siThreadSteps = 5;
+	private static int siThreadSteps = 1;
 
 	/**
 	 * For atomicity
@@ -48,14 +50,15 @@ public class BlockManager4
 	 * in the thread creation order
 	 */
 	private static Semaphore s2 = new Semaphore(1);
-	
+
+
 	// The main()
 	public static void main(String[] argv)
 	{
 		try
 		{
 			// Some initial stats...
-			System.out.println("Main thread 4 starts executing.");
+			System.out.println("Main thread 3 starts executing.");
 			System.out.println("Initial value of top = " + soStack.getITop() + ".");
 			System.out.println("Initial value of stack top = " + soStack.pick() + ".");
 			System.out.println("Main thread will now fork several threads.");
@@ -146,21 +149,20 @@ public class BlockManager4
 	{
 		/**
 		 * A copy of a block returned by pop().
-                 * @see BlocStack#pop()
+                 * @see BlockStack#pop()
 		 */
 		private char cCopy;
 
 		public void run()
 		{
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] starts executing.");
-			
+
 			phase1();
-			this.phase1ThreadsIncomplete--;
-			if (this.phase1ThreadsIncomplete)
 			
 			try
 			{
-				mutex.P(); //inside try block, because the system exits if exception occurs anyways 
+				
+				mutex.P();
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
 				
 				this.cCopy = soStack.pop();
@@ -184,16 +186,21 @@ public class BlockManager4
 					"Acq[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
-				mutex.V(); 
+
+				mutex.V(); 				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 			}
 			catch(Exception e)
 			{
 				reportException(e);
 				System.exit(1);
 			}
-			
-			
+
+			s1.P();
 			phase2();
+			s1.V();
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -249,6 +256,10 @@ public class BlockManager4
 					"Rel[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 				mutex.V();
 			}
 			catch(Exception e)
@@ -257,7 +268,9 @@ public class BlockManager4
 				System.exit(1);
 			}
 
+			s1.P();
 			phase2();
+			s1.V();
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -294,6 +307,10 @@ public class BlockManager4
 					System.out.println(".");
 
 				}
+				phaseOneThreadsIncomplete--;
+				if (phaseOneThreadsIncomplete <= 0){
+					s1.V();
+				}
 				mutex.V();
 			}
 			catch(Exception e)
@@ -302,9 +319,9 @@ public class BlockManager4
 				System.exit(1);
 			}
 
-
+			s1.P();
 			phase2();
-
+			s1.V();
 		}
 	} // class CharStackProber
 
