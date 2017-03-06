@@ -1,0 +1,127 @@
+/**								/**
+ * Class BlockStack						 * Class BlockStack
+ * Implements character block stack and operations upon it.	 * Implements character block stack and operations upon it.
+ *								 *
+ * $Revision: 1.4 $						 * $Revision: 1.4 $
+ * $Last Revision Date: 2017/02/08 $				 * $Last Revision Date: 2017/02/08 $
+ *								 *
+ * @author Serguei A. Mokhov, mokhov@cs.concordia.ca;		 * @author Serguei A. Mokhov, mokhov@cs.concordia.ca;
+ * Inspired by an earlier code by Prof. D. Probst		 * Inspired by an earlier code by Prof. D. Probst
+
+ */								 */
+class BlockStack					      |	class BlockStack1
+{								{
+	/**								/**
+	 * # of letters in the English alphabet + 2			 * # of letters in the English alphabet + 2
+	 */								 */
+	public static final int MAX_SIZE = 28;				public static final int MAX_SIZE = 28;
+
+	/**								/**
+	 * Default stack size						 * Default stack size
+	 */								 */
+	public static final int DEFAULT_SIZE = 6;			public static final int DEFAULT_SIZE = 6;
+
+	/**								/**
+	 * Current size of the stack					 * Current size of the stack
+	 */								 */
+	public int iSize = DEFAULT_SIZE;				public int iSize = DEFAULT_SIZE;
+
+	/**								/**
+	 * Current top of the stack					 * Current top of the stack
+	 */								 */
+	public int iTop  = 3;						public int iTop  = 3;
+
+	/**								/**
+	 * stack[0:5] with four defined values				 * stack[0:5] with four defined values
+	 */								 */
+	public char acStack[] = new char[] {'a', 'b', 'c', 'd		public char acStack[] = new char[] {'a', 'b', 'c', 'd
+							      |		
+							      >		//Part of Task 1
+							      >		private int stackAccessCounter = 0;
+							      >		
+	/**								/**
+	 * Default constructor						 * Default constructor
+	 */								 */
+	private int stackAccessCounter = 0;		      |		public BlockStack1()
+							      <
+	public BlockStack()				      <
+	{								{
+	}								}
+
+	/**								/**
+	 * Supplied size						 * Supplied size
+	 */								 */
+	public BlockStack(final int piSize)		      |		public BlockStack1(final int piSize)
+	{								{
+
+
+                if(piSize != DEFAULT_SIZE)			                if(piSize != DEFAULT_SIZE)
+		{								{
+			this.acStack = new char[piSize];				this.acStack = new char[piSize];
+
+			// Fill in with letters of the alphab				// Fill in with letters of the alphab
+			// 2 free blocks						// 2 free blocks
+			for(int i = 0; i < piSize - 2; i++)				for(int i = 0; i < piSize - 2; i++)
+				this.acStack[i] = (char)('a' 					this.acStack[i] = (char)('a' 
+
+			this.acStack[piSize - 2] = this.acSta				this.acStack[piSize - 2] = this.acSta
+
+			this.iTop = piSize - 3;						this.iTop = piSize - 3;
+                        this.iSize = piSize;			                        this.iSize = piSize;
+		}								}
+	}								}
+	public int getTop(){						public int getTop(){
+		return iTop;							return iTop;
+	}								}
+	public int getSize(){						public int getSize(){
+		return iSize;							return iSize;
+	}								}
+	public int getAccessCounter(){					public int getAccessCounter(){
+		return stackAccessCounter;					return stackAccessCounter;
+	}								}
+	public boolean isEmpty(){					public boolean isEmpty(){
+		return (this.iTop == -1);					return (this.iTop == -1);
+	}								}
+	/**								/**
+	 * Picks a value from the top without modifying the s		 * Picks a value from the top without modifying the s
+	 * @return top element of the stack, char			 * @return top element of the stack, char
+	 */								 */
+	public char pick()						public char pick()
+	{								{
+							      >			stackAccessCounter++;
+		return this.acStack[this.iTop];					return this.acStack[this.iTop];
+	}								}
+
+	/**								/**
+	 * Returns arbitrary value from the stack array			 * Returns arbitrary value from the stack array
+	 * @return the element, char					 * @return the element, char
+	 */								 */
+	public char getAt(final int piPosition)				public char getAt(final int piPosition)
+	{								{
+							      >			stackAccessCounter++;
+		return this.acStack[piPosition];				return this.acStack[piPosition];
+	}								}
+
+	/**								/**
+	 * Standard push operation					 * Standard push operation
+	 */								 */
+	public void push(final char pcBlock)				public void push(final char pcBlock)
+	{								{
+							      >			stackAccessCounter++;
+		this.acStack[++this.iTop] = pcBlock;				this.acStack[++this.iTop] = pcBlock;
+	}								}
+
+	/**								/**
+	 * Standard pop operation					 * Standard pop operation
+	 * @return ex-top element of the stack, char			 * @return ex-top element of the stack, char
+	 */								 */
+	public char pop()						public char pop()
+	{								{
+							      >			stackAccessCounter++;
+		char cBlock = this.acStack[this.iTop];				char cBlock = this.acStack[this.iTop];
+		this.acStack[this.iTop--] = '$'; // Leave pre			this.acStack[this.iTop--] = '$'; // Leave pre
+		return cBlock;							return cBlock;
+	}								}
+}								}
+
+// EOF								// EOF

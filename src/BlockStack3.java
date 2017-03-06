@@ -55,9 +55,7 @@ class BlockStack3
 	 */
 	public BlockStack3(final int piSize)
 	{
-
-
-                if(piSize != DEFAULT_SIZE)
+		if(piSize != DEFAULT_SIZE)
 		{
 			this.acStack = new char[piSize];
 
@@ -72,6 +70,7 @@ class BlockStack3
                         this.iSize = piSize;
 		}
 	}
+
 	public int getITop(){
 		return iTop;
 	}
@@ -153,8 +152,8 @@ class BlockStack3
 			System.err.println("IT'S EMPTY");
 		}
 		catch (Exception e){
-			System.err.println("some exception lmao");
-		}
+		System.err.println("some exception lmao");
+	}
 		return cBlock;
 	}
 }
