@@ -1,5 +1,5 @@
 /**
- * Class BlockStack3
+ * Class BlockStack5
  * Implements character block stack and operations upon it.
  *
  * $Revision: 1.4 $
@@ -11,7 +11,7 @@
  */
 //import EmptyStackException;
 
-class BlockStack3
+class BlockStack5
 {
 	/**
 	 * # of letters in the English alphabet + 2
@@ -46,16 +46,18 @@ class BlockStack3
 	/**
 	 * Default constructor
 	 */
-	public BlockStack3()
+	public BlockStack5()
 	{
 	}
 
 	/**
 	 * Supplied size
 	 */
-	public BlockStack3(final int piSize)
+	public BlockStack5(final int piSize)
 	{
-		if(piSize != DEFAULT_SIZE)
+
+
+                if(piSize != DEFAULT_SIZE)
 		{
 			this.acStack = new char[piSize];
 
@@ -70,7 +72,6 @@ class BlockStack3
                         this.iSize = piSize;
 		}
 	}
-
 	public int getITop(){
 		return iTop;
 	}
@@ -152,8 +153,8 @@ class BlockStack3
 			System.err.println("IT'S EMPTY");
 		}
 		catch (Exception e){
-		System.err.println("some exception lmao");
-	}
+			System.err.println("some exception lmao");
+		}
 		return cBlock;
 	}
 }

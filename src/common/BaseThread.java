@@ -17,6 +17,7 @@ import java.util.Random;
  */
 public class BaseThread extends Thread
 {
+
 	/*
 	 * ------------
 	 * Data members

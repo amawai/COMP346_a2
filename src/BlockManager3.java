@@ -22,7 +22,7 @@ public class BlockManager3
 	/**
 	 * Number of threads dumping stack
 	 */
-	private static final int NUM_PROBERS = 4;
+	private static final int NUM_PROBERS = 5;
 
 	/**
 	 * Number of steps they take
@@ -115,6 +115,9 @@ public class BlockManager3
 			for(int i = 0; i < NUM_PROBERS; i++)
 				aStackProbers[i].join();
 
+			aStackProbers[4].start();
+			aStackProbers[4].join();
+
 			// Some final stats after all the child threads terminated...
 			System.out.println("System terminates normally.");
 			System.out.println("Final value of top = " + soStack.getITop() + ".");
@@ -145,10 +148,6 @@ public class BlockManager3
 	 */
 	static class AcquireBlock extends BaseThread
 	{
-		/**
-		 * A copy of a block returned by pop().
-                 * @see BlocStack#pop()
-		 */
 		private char cCopy;
 
 		public void run()
@@ -159,6 +158,7 @@ public class BlockManager3
 			
 			try
 			{
+<<<<<<< HEAD
 				
 				mutex.P();
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
@@ -166,6 +166,13 @@ public class BlockManager3
 				this.cCopy = soStack.pop();
 				
 				
+=======
+				mutex.P();
+				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
+
+				this.cCopy = soStack.pop();
+
+>>>>>>> 892ef74c450bc684ac8834db462915f8c4babf13
 				System.out.println
 				(
 					"AcquireBlock thread [TID=" + this.iTID + "] has obtained Ms block " + this.cCopy +
@@ -184,7 +191,12 @@ public class BlockManager3
 					"Acq[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+<<<<<<< HEAD
 				mutex.V(); 
+=======
+				mutex.V();
+
+>>>>>>> 892ef74c450bc684ac8834db462915f8c4babf13
 			}
 			catch(Exception e)
 			{
@@ -219,11 +231,11 @@ public class BlockManager3
 
 			try
 			{
+				mutex.P();
 				
 				mutex.P();
 				if(soStack.isEmpty() == false)
 					this.cBlock = (char)(soStack.pick() + 1);
-
 
 				System.out.println
 				(
@@ -231,11 +243,19 @@ public class BlockManager3
 					" to position " + (soStack.getITop() + 1) + "."
 				);
 				
+<<<<<<< HEAD
 				
 				//Critical section, since soStack should only be accessed one at a time 
 				soStack.push(this.cBlock);
 				
 				
+=======
+
+				//Critical section, since soStack should only be accessed one at a time 
+				soStack.push(this.cBlock);
+				
+
+>>>>>>> 892ef74c450bc684ac8834db462915f8c4babf13
 				
 				System.out.println
 				(
@@ -250,6 +270,7 @@ public class BlockManager3
 				);
 				mutex.V();
 			}
+
 			catch(Exception e)
 			{
 				reportException(e);

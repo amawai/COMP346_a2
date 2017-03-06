@@ -2,7 +2,7 @@
 import common.*;
 
 /**
- * Class BlockManager4
+ * Class BlockManager5
  * Implements character block "manager" and does twists with threads.
  *
  * @author Serguei A. Mokhov, mokhov@cs.concordia.ca;
@@ -12,12 +12,12 @@ import common.*;
  * $Last Revision Date: 2017/02/08 $
 
  */
-public class BlockManager4
+public class BlockManager5
 {
 	/**
 	 * The stack itself
 	 */
-	private static BlockStack4 soStack = new BlockStack4();
+	private static BlockStack5 soStack = new BlockStack5();
 
 	private static int phaseOneThreadsIncomplete = 10;
 
@@ -187,7 +187,8 @@ public class BlockManager4
 					soStack.pick() + "."
 				);
 
-				mutex.V(); 				phaseOneThreadsIncomplete--;
+				mutex.V(); 				
+				phaseOneThreadsIncomplete--;
 				if (phaseOneThreadsIncomplete <= 0){
 					s1.V();
 				}
@@ -299,9 +300,9 @@ public class BlockManager4
 					for(int s = 0; s < soStack.getISize(); s++)
 						System.out.print
 						(
-							(s == BlockManager4.soStack.getITop() ? "(" : "[") +
-							BlockManager4.soStack.getAt(s) +
-							(s == BlockManager4.soStack.getITop() ? ")" : "]")
+							(s == BlockManager5.soStack.getITop() ? "(" : "[") +
+							BlockManager5.soStack.getAt(s) +
+							(s == BlockManager5.soStack.getITop() ? ")" : "]")
 						);
 
 					System.out.println(".");
