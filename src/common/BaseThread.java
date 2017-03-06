@@ -172,7 +172,7 @@ public class BaseThread extends Thread
 	 */
 	public synchronized boolean turnTestAndSet()
 	{
-		return turnTestAndSet(true);
+		return turnTestAndSet(this.iTID == siTurn);
 	}
 
 }

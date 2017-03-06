@@ -200,7 +200,12 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			if (this.turnTestAndSet()){
+				s2.P();
+				setInitialTurn(this.getTID() + 1);
+				phase2();
+			}
+			s2.V();
 			s1.V();
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
@@ -260,6 +265,7 @@ public class BlockManager5
 				phaseOneThreadsIncomplete--;
 				if (phaseOneThreadsIncomplete <= 0){
 					s1.V();
+					
 				}
 				mutex.V();
 			}
@@ -270,7 +276,12 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			if (this.turnTestAndSet()){
+				s2.P();
+				setInitialTurn(this.getTID() + 1);
+				phase2();
+			}
+			s2.V();
 			s1.V();
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
@@ -321,7 +332,12 @@ public class BlockManager5
 			}
 
 			s1.P();
-			phase2();
+			if (this.turnTestAndSet()){
+				s2.P();
+				setInitialTurn(this.getTID() + 1);
+				phase2();
+			}
+			s2.V();
 			s1.V();
 		}
 	} // class CharStackProber
