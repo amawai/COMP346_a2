@@ -73,7 +73,6 @@ public class BlockManager3
 			ReleaseBlock rb1 = new ReleaseBlock();
 			ReleaseBlock rb2 = new ReleaseBlock();
 			ReleaseBlock rb3 = new ReleaseBlock();
-
 			System.out.println("main(): Three ReleaseBlock threads have been created.");
 
 			// Create an array object first
@@ -88,6 +87,7 @@ public class BlockManager3
 			/*
 			 * Twist 'em all
 			 */
+
 			ab1.start();
 			aStackProbers[0].start();
 			rb1.start();
@@ -151,18 +151,18 @@ public class BlockManager3
 		{
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] starts executing.");
 
-
 			phase1();
-
-
+			
 			try
 			{
 				System.out.println("AcquireBlock thread [TID=" + this.iTID + "] requests Ms block.");
-
-
+				
+				mutex.P();
+				
 				this.cCopy = soStack.pop();
-
-
+				
+				mutex.V(); 
+				
 				System.out.println
 				(
 					"AcquireBlock thread [TID=" + this.iTID + "] has obtained Ms block " + this.cCopy +
@@ -181,15 +181,15 @@ public class BlockManager3
 					"Acq[TID=" + this.iTID + "]: Current value of stack top = " +
 					soStack.pick() + "."
 				);
+				
 			}
 			catch(Exception e)
 			{
 				reportException(e);
 				System.exit(1);
 			}
-
+			
 			phase2();
-
 
 			System.out.println("AcquireBlock thread [TID=" + this.iTID + "] terminates.");
 		}
@@ -209,13 +209,14 @@ public class BlockManager3
 		public void run()
 		{
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] starts executing.");
-
+			
 
 			phase1();
 
 
 			try
 			{
+				
 				if(soStack.isEmpty() == false)
 					this.cBlock = (char)(soStack.pick() + 1);
 
@@ -224,9 +225,13 @@ public class BlockManager3
 					"ReleaseBlock thread [TID=" + this.iTID + "] returns Ms block " + this.cBlock +
 					" to position " + (soStack.getITop() + 1) + "."
 				);
-
+				
+				mutex.P();
+				//Critical section, since soStack should only be accessed one at a time 
 				soStack.push(this.cBlock);
-
+				
+				mutex.V();
+				
 				System.out.println
 				(
 					"Rel[TID=" + this.iTID + "]: Current value of top = " +
@@ -246,9 +251,7 @@ public class BlockManager3
 				System.exit(1);
 			}
 
-
 			phase2();
-
 
 			System.out.println("ReleaseBlock thread [TID=" + this.iTID + "] terminates.");
 		}

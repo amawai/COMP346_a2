@@ -120,7 +120,7 @@ class BlockStack3
 			if (this.isEmpty()){
 				throw new EmptyStackException("Empty");
 			}
-			else if (this.getITop() == MAX_SIZE){
+			else if (this.getITop() == DEFAULT_SIZE){
 				throw new Exception();
 			}
 			this.acStack[++this.iTop] = pcBlock;
